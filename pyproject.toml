@@ -1,0 +1,31 @@
+[project]
+name = "snakemake-argparse-bridge"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+authors = [{ name = "Cade Mirchandani", email = "cmirchan@ucsc.edu" }]
+requires-python = ">=3.12"
+dependencies = []
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.pixi.workspace]
+channels = ["conda-forge", "bioconda"]
+platforms = ["osx-arm64"]
+
+[tool.pixi.pypi-dependencies]
+snakemake-argparse-bridge = { path = ".", editable = true }
+
+[tool.pixi.tasks]
+
+[tool.pixi.dependencies]
+snakemake = ">=9.6.2,<10"
+
+[tool.pixi.feature.dev.dependencies]
+pytest = "*"
+ruff = "*"
+
+[tool.pixi.environments]
+dev = ["dev"]

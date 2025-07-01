@@ -1,0 +1,55 @@
+"""
+Test Snakefile demonstrating all available directives for snakemake-argparse-bridge
+"""
+
+
+# Configuration
+configfile: "config.yaml"
+
+
+# Sample wildcard values
+SAMPLES = ["sample1", "sample2"]
+
+
+rule all:
+    input:
+        expand("output/{sample}_processed.txt", sample=SAMPLES),
+        expand("output/{sample}_summary.json", sample=SAMPLES),
+
+
+rule process_sample:
+    """Process a sample using our decorated script with all directives"""
+    input:
+        data="data/{sample}.txt",
+    output:
+        result="output/{sample}_processed.txt",
+    params:
+        method=config.get("processing_method", "default"),
+        threshold=config.get("threshold", 0.5),
+        extra_param="custom_value",
+    log:
+        "logs/{sample}_process.log",
+    threads: 2
+    resources:
+        mem_mb=1000,
+        runtime=30,
+    script:
+        "scripts/process_sample.py"
+
+
+rule summarize_sample:
+    """Create summary using another decorated script"""
+    input:
+        processed="output/{sample}_processed.txt",
+    output:
+        summary="output/{sample}_summary.json",
+    params:
+        format="json",
+        include_stats=True,
+    log:
+        "logs/{sample}_summary.log",
+    threads: 1
+    resources:
+        mem_mb=500,
+    script:
+        "scripts/summarize_results.py"
