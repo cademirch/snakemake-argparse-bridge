@@ -15,6 +15,10 @@ build-backend = "hatchling.build"
 channels = ["conda-forge", "bioconda"]
 platforms = ["osx-arm64"]
 
+[tool.pixi.environments]
+dev = { features = ["dev"] }
+publish = { features = ["publish"] }
+
 [tool.pixi.pypi-dependencies]
 snakemake-argparse-bridge = { path = ".", editable = true }
 
@@ -27,5 +31,13 @@ snakemake = ">=9.6.2,<10"
 pytest = "*"
 ruff = "*"
 
-[tool.pixi.environments]
-dev = ["dev"]
+# Publish
+[tool.pixi.feature.publish.dependencies]
+twine = ">=6.1.0,<7"
+python-build = ">=1.2.2,<2"
+
+[tool.pixi.feature.publish.tasks]
+build = { cmd = "python -m build", description = "Build the package into the dist/ directory" }
+check-build = { cmd = "python -m twine check dist/*", depends-on = [
+  "build",
+], description = "Check that the package can be uploaded" }
