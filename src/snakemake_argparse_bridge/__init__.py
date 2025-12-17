@@ -67,6 +67,11 @@ class SnakemakeArgparseBridge:
             arg_name = action.dest
             value = self._get_snakemake_value(arg_name)
 
+            # If a type is specified, attempt to cast it
+            arg_type = action.type
+            if arg_type is not None:
+                value = arg_type(value)
+
             if value is not None:
                 setattr(namespace, arg_name, value)
             elif action.default is not None:

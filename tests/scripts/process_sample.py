@@ -8,6 +8,7 @@ import argparse
 import sys
 import os
 import json
+from pathlib import Path
 
 # Add the src directory to the path for testing
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "..", "src"))
@@ -30,13 +31,13 @@ from snakemake_argparse_bridge import snakemake_compatible
 )
 def main():
     parser = argparse.ArgumentParser(description="Process sample data")
-    parser.add_argument("--input-file", required=True, help="Input data file")
-    parser.add_argument("--output-file", required=True, help="Output file")
+    parser.add_argument("--input-file", type=Path, required=True, help="Input data file")
+    parser.add_argument("--output-file", type=Path, required=True, help="Output file")
     parser.add_argument("--sample", required=True, help="Sample name")
     parser.add_argument("--method", default="default", help="Processing method")
     parser.add_argument("--threshold", type=float, default=0.5, help="Threshold value")
     parser.add_argument("--extra-param", help="Extra parameter")
-    parser.add_argument("--log-file", help="Log file path")
+    parser.add_argument("--log-file", type=Path, help="Log file path")
     parser.add_argument("--threads", type=int, default=1, help="Number of threads")
     parser.add_argument("--memory", type=int, help="Memory in MB")
     parser.add_argument("--runtime", type=int, help="Runtime in minutes")
@@ -52,17 +53,18 @@ def main():
         "threads": args.threads,
         "memory": args.memory,
         "runtime": args.runtime,
-        "input_file": args.input_file,
-        "output_file": args.output_file,
+        "input_file": str(args.input_file),
+        "output_file": str(args.output_file),
     }
 
     # Write log if log file is specified
     if args.log_file:
-        os.makedirs(os.path.dirname(args.log_file), exist_ok=True)
+        os.makedirs(args.log_file.parent, exist_ok=True)
         with open(args.log_file, "w") as f:
             json.dump(log_data, f, indent=2)
 
     # Read input file
+
     with open(args.input_file, "r") as f:
         input_data = f.read().strip()
 
@@ -73,7 +75,7 @@ def main():
         processed_data = f"PROCESSED({input_data})_threshold_{args.threshold}"
 
     # Create output directory if needed
-    os.makedirs(os.path.dirname(args.output_file), exist_ok=True)
+    os.makedirs(args.output_file.parent, exist_ok=True)
 
     # Write output
     with open(args.output_file, "w") as f:
