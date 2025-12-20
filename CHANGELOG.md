@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.1.4](https://github.com/cademirch/snakemake-argparse-bridge/compare/v0.1.3...v0.1.4) (2025-12-20)
+
+
+### Miscellaneous Chores
+
+* release 0.1.4 ([#7](https://github.com/cademirch/snakemake-argparse-bridge/issues/7)) ([6479b93](https://github.com/cademirch/snakemake-argparse-bridge/commit/6479b93e781f9261518abb63fe1180b2e25ce87b))
+
 ## [0.1.3](https://github.com/cademirch/snakemake-argparse-bridge/compare/v0.1.2...v0.1.3) (2025-07-14)
 
 
