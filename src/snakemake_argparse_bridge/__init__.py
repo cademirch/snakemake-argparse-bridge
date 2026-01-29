@@ -69,17 +69,17 @@ class SnakemakeArgparseBridge:
 
             # If a type is specified, attempt to cast it
             arg_type = action.type
-            if arg_type is not None:
+            if arg_type is not None and value is not None:
                 value = arg_type(value)
 
             if value is not None:
                 setattr(namespace, arg_name, value)
-            elif action.default is not None:
-                setattr(namespace, arg_name, action.default)
-            elif action.required:
+            elif action.required and value is None:
                 raise ValueError(
                     f"Required argument '{arg_name}' not found in Snakemake context"
                 )
+            else:
+                setattr(namespace, arg_name, action.default)
 
         return namespace
 
@@ -109,7 +109,10 @@ class SnakemakeArgparseBridge:
                 index = int(index_part.rstrip("]"))
                 obj = getattr(obj, attr_name)[index]
             else:
-                obj = getattr(obj, attr)
+                try:
+                    obj = getattr(obj, attr)
+                except AttributeError:
+                    obj = None
         return obj
 
 
