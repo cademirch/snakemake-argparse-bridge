@@ -27,6 +27,8 @@ from snakemake_argparse_bridge import snakemake_compatible
         "threads": "threads",
         "memory": "resources.mem_mb",
         "runtime": "resources.runtime",
+        "subset": "params.subset",
+        "overrides": "params.overrides",
     }
 )
 def main():
@@ -41,6 +43,8 @@ def main():
     parser.add_argument("--threads", type=int, default=1, help="Number of threads")
     parser.add_argument("--memory", type=int, help="Memory in MB")
     parser.add_argument("--runtime", type=int, help="Runtime in minutes")
+    parser.add_argument("--subset", required=False, default="all")
+    parser.add_argument("--overrides", required=False, default=None)
 
     args = parser.parse_args()
 
@@ -53,6 +57,8 @@ def main():
         "threads": args.threads,
         "memory": args.memory,
         "runtime": args.runtime,
+        "subset": args.subset,
+        "overrides": args.overrides or "NOT SPECIFIED",
         "input_file": str(args.input_file),
         "output_file": str(args.output_file),
     }
@@ -85,6 +91,8 @@ def main():
         f.write(f"Threads: {args.threads}\n")
         f.write(f"Memory: {args.memory}MB\n")
         f.write(f"Runtime: {args.runtime}min\n")
+        f.write(f"Subset: {args.subset}")
+        f.write(f"Overrides: {args.overrides}\n")
         f.write(f"Processed Data: {processed_data}\n")
 
     print(f"Successfully processed {args.sample} with {args.method} method")
