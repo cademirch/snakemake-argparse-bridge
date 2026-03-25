@@ -3,6 +3,7 @@ A bridge package to make argparse-based scripts work seamlessly with Snakemake.
 """
 
 import argparse
+import sys
 from typing import Dict, Any, Optional, Callable, Union
 
 
@@ -44,11 +45,9 @@ class SnakemakeArgparseBridge:
     def _detect_snakemake_context(self) -> bool:
         """Detect if we're running within a Snakemake script context."""
         try:
-            import snakemake.script
-
-            self._snakemake = snakemake.script.snakemake
-            return True
-        except (ImportError, AttributeError):
+            self._snakemake = sys.modules["__main__"].snakemake
+            return self._snakemake != None
+        except AttributeError:
             return False
 
     def _parse_from_snakemake(self):
